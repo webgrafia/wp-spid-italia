@@ -230,7 +230,7 @@ add_filter( 'login_message', function( $message ) {
   $formaction = $auth->getLoginURL();
     ?>
     
-    <form name="spid_idp_access" action="?saml_login=spid" method="post" style="text-align: center;background:none;box-shadow:none;margin: 10px 0;padding: 0;">
+    <form name="spid_idp_access" action="?saml_login=spid" method="post" style="text-align: center;background:none;box-shadow:none;margin: 10px 0;padding: 0; border:none;">
             <a href="#" class="italia-it-button italia-it-button-size-m button-spid" spid-idp-button="#spid-idp-button-small-post" aria-haspopup="true" aria-expanded="false">
                 <span class="italia-it-button-icon"><img src="<?php echo $spid_ico_circle_svg; ?>" onerror="this.src='<?php echo $spid_ico_circle_png; ?>'; this.onerror=null;" alt="" /></span>
                 <span class="italia-it-button-text">Entra con SPID</span>
