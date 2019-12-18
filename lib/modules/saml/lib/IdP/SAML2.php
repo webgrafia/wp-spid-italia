@@ -326,6 +326,7 @@ class sspmod_saml_IdP_SAML2 {
 			} else {
 				$nameIDFormat = NULL;
 			}
+			
 			if (isset($nameIdPolicy['AllowCreate'])) {
 				$allowCreate = $nameIdPolicy['AllowCreate'];
 			} else {

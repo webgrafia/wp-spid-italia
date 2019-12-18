@@ -43,8 +43,8 @@ class SimpleSAML_Error_Exception extends Exception
      */
     public function __construct($message, $code = 0, Exception $cause = null)
     {
-        assert('is_string($message)');
-        assert('is_int($code)');
+        assert(is_string($message));
+        assert(is_int($code));
 
         parent::__construct($message, $code);
 
@@ -87,7 +87,6 @@ class SimpleSAML_Error_Exception extends Exception
         $pos = $exception->getFile().':'.$exception->getLine();
 
         foreach ($exception->getTrace() as $t) {
-
             $function = $t['function'];
             if (array_key_exists('class', $t)) {
                 $function = $t['class'].'::'.$function;
@@ -153,6 +152,9 @@ class SimpleSAML_Error_Exception extends Exception
         $ret = array(
             $this->getClass().': '.$this->getMessage(),
         );
+        
+        /* SPID CUSTOM */
+        //$ret = array();
         return array_merge($ret, $this->formatBacktrace($anonymize));
     }
 
@@ -175,8 +177,11 @@ class SimpleSAML_Error_Exception extends Exception
         do {
             if ($e !== $this) {
                 $ret[] = 'Caused by: '.$e->getClass().': '.$e->getMessage();
+                
+                /* SPID CUSTOM */
+                //$ret[] = 'Error: '.$e->getMessage();
             }
-            $ret[] = 'Backtrace:';
+            //$ret[] = 'Backtrace:';
 
             $depth = count($e->backtrace);
             foreach ($e->backtrace as $i => $trace) {
@@ -184,6 +189,7 @@ class SimpleSAML_Error_Exception extends Exception
                     $trace = str_replace($basedir, '', $trace);
                 }
 
+                /* SPID CUSTOM : to comment */
                 $ret[] = ($depth - $i - 1).' '.$trace;
             }
             $e = $e->cause;

@@ -12,6 +12,14 @@ $this->includeAtTemplateBase('includes/header.php');
 <?php
 echo htmlspecialchars($this->t($this->data['dictDescr'], $this->data['parameters']));
 
+if($this->data['error']['statusCode']!='') { ?>
+    <div style="border: 1px solid #eee; padding: 1em; margin: 1em 0">
+        <p style="margin: 1px">StatusCode: <?php echo htmlspecialchars($this->data['error']['statusCode']); ?></p>
+        <p style="margin: 1px">StatusMessage: <?php echo htmlspecialchars($this->data['error']['statusMessage']); ?></p>     
+        <p style="margin: 1px">ErrorMessage: <?php echo htmlspecialchars($this->data['errorMessage']); ?></p>        
+    </div>
+<?php }
+
 // include optional information for error
 if (isset($this->data['includeTemplate'])) {
     $this->includeAtTemplateBase($this->data['includeTemplate']);
@@ -23,17 +31,17 @@ if (isset($this->data['includeTemplate'])) {
             <pre id="trackid" class="input-left"><?php echo $this->data['error']['trackId']; ?></pre>
             <button data-clipboard-target="#trackid" id="btntrackid" class="btnaddonright">
                 <img src="/<?php echo $this->data['baseurlpath'].'resources/icons/clipboard.svg'; ?>"
-                     alt="Copy to clipboard">
+                     alt="Copy to clipboard" />
             </button>
         </div>
     </div>
 <?php
+
 // print out exception only if the exception is available
 if ($this->data['showerrors']) {
 ?>
     <h2><?php echo $this->t('debuginfo_header'); ?></h2>
     <p><?php echo $this->t('debuginfo_text'); ?></p>
-
     <div style="border: 1px solid #eee; padding: 1em; font-size: x-small">
         <p style="margin: 1px"><?php echo htmlspecialchars($this->data['error']['exceptionMsg']); ?></p>
         <pre style="padding: 1em; font-family: monospace;"><?php
@@ -54,7 +62,7 @@ if (isset($this->data['errorReportAddress'])) {
             <input type="email" size="25" name="email" value="<?php echo htmlspecialchars($this->data['email']); ?>" />
         </p>
         <p>
-            <textarea class="metadatabox" name="text" rows="6" style="width: 100%; padding: 0.5em;"><?php
+            <textarea class="metadatabox" name="text" rows="6" cols="50" style="width: 100%; padding: 0.5em;"><?php
                 echo $this->t('report_explain'); ?></textarea>
         </p>
         <p>

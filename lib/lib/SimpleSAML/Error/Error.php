@@ -9,15 +9,12 @@
  */
 class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
 {
-
-
     /**
      * The error code.
      *
      * @var string
      */
     private $errorCode;
-
 
     /**
      * The http code.
@@ -26,14 +23,12 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
      */
     protected $httpCode = 500;
 
-
     /**
      * The error title tag in dictionary.
      *
      * @var string
      */
     private $dictTitle;
-
 
     /**
      * The error description tag in dictionary.
@@ -42,14 +37,12 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
      */
     private $dictDescr;
 
-
     /**
      * The name of module that threw the error.
      *
      * @var string|null
      */
     private $module = null;
-
 
     /**
      * The parameters for the error.
@@ -58,14 +51,12 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
      */
     private $parameters;
 
-
     /**
      * Name of custom include template for the error.
      *
      * @var string|null
      */
     protected $includeTemplate = null;
-
 
     /**
      * Constructor for this error.
@@ -79,7 +70,7 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
      */
     public function __construct($errorCode, Exception $cause = null, $httpCode = null)
     {
-        assert('is_string($errorCode) || is_array($errorCode)');
+        assert(is_string($errorCode) || is_array($errorCode));
 
         if (is_array($errorCode)) {
             $this->parameters = $errorCode;
@@ -100,8 +91,8 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
             $this->dictTitle = '{'.$this->module.':errors:title_'.$moduleCode[1].'}';
             $this->dictDescr = '{'.$this->module.':errors:descr_'.$moduleCode[1].'}';
         } else {
-            $this->dictTitle = '{errors:title_'.$this->errorCode.'}';
-            $this->dictDescr = '{errors:descr_'.$this->errorCode.'}';
+            $this->dictTitle = SimpleSAML\Error\ErrorCodes::getErrorCodeTitle($this->errorCode);
+            $this->dictDescr = SimpleSAML\Error\ErrorCodes::getErrorCodeDescription($this->errorCode);
         }
 
         if (!empty($this->parameters)) {
@@ -226,7 +217,13 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
         } else {
             $referer = 'unknown';
         }
+
+        $statusCode = (method_exists($this->getCause(), "getStatus"))? $this->getCause()->getStatus() : "";
+        $statusMessage = (method_exists($this->getCause(), "getMessage"))? $this->getCause()->getMessage() : "";
+
         $errorData = array(
+            'statusCode'     => $statusCode,
+            'statusMessage'  => $statusMessage,
             'exceptionMsg'   => $emsg,
             'exceptionTrace' => $etrace,
             'reportId'       => $reportId,
@@ -254,9 +251,9 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
         $this->logError();
 
         $errorData = $this->saveError();
-
         $config = SimpleSAML_Configuration::getInstance();
 
+        $data = array();
         $data['showerrors'] = $config->getBoolean('showerrors', true);
         $data['error'] = $errorData;
         $data['errorCode'] = $this->errorCode;
@@ -266,6 +263,16 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
         $data['dictDescr'] = $this->dictDescr;
         $data['includeTemplate'] = $this->includeTemplate;
         $data['clipboard.js'] = true;
+
+        switch($errorData['statusMessage']) {
+            case 'Responder/AuthnFailed: ErrorCode nr19': $data['errorMessage'] = 'Autenticazione fallita per ripetuta sottomissione di credenziali errate (superato numero tentativi secondo le policy adottate)'; break;
+            case 'Responder/AuthnFailed: ErrorCode nr20': $data['errorMessage'] = 'Utente privo di credenziali compatibili con il livello richiesto dal fornitore del servizio'; break;
+            case 'Responder/AuthnFailed: ErrorCode nr21': $data['errorMessage'] = 'Timeout durante l’ autenticazione utente'; break;
+            case 'Responder/AuthnFailed: ErrorCode nr22': $data['errorMessage'] = 'Utente nega il consenso all’ invio di dati al SP in caso di sessione vigente'; break;
+            case 'Responder/AuthnFailed: ErrorCode nr23': $data['errorMessage'] = 'Utente con identità sospesa/revocata o con credenziali bloccate'; break;
+            case 'Responder/AuthnFailed: ErrorCode nr25': $data['errorMessage'] = 'Processo di autenticazione annullato dall’ utente'; break;
+            default: $data['errorMessage'] = 'Errore non identificato'; break;
+        }
 
         // check if there is a valid technical contact email address
         if ($config->getBoolean('errorreporting', true) &&
@@ -289,12 +296,14 @@ class SimpleSAML_Error_Error extends SimpleSAML_Error_Exception
 
         $show_function = $config->getArray('errors.show_function', null);
         if (isset($show_function)) {
-            assert('is_callable($show_function)');
+            assert(is_callable($show_function));
             call_user_func($show_function, $config, $data);
-            assert('FALSE');
+            assert(false);
         } else {
             $t = new SimpleSAML_XHTML_Template($config, 'error.php', 'errors');
             $t->data = array_merge($t->data, $data);
+            $t->data['dictTitleTranslated'] = $t->getTranslator()->t($t->data['dictTitle']);
+            $t->data['dictDescrTranslated'] = $t->getTranslator()->t($t->data['dictDescr'], $t->data['parameters']);
             $t->show();
         }
 

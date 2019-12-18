@@ -56,28 +56,36 @@ $config = array(
           'urn:oid:x.x.x.x',
           ), */
 
-
-        /* Impostare il livello di spid che si vuole (1,2,3)  per il servizio */
+        /* Impostare il livello di spid che si vuole (1,2,3)  per il servizio la stringa sottostante non è più corretta
+            *
+            * 'urn:oasis:names:tc:SAML:2.0:ac:classes:SpidL1',
+            *   https://www.agid.gov.it/sites/default/files/repository_files/documentazione/spid-avviso-n5-regole-tecniche-errata-corrige.pdf
+            *   stringhe corrette
+            *  'https://www.spid.gov.it/SpidL2',
+            *  'https://www.spid.gov.it/SpidL3',
+            */
+         /* Impostare il livello di spid che si vuole (1,2,3)  per il servizio */
 
         'AuthnContextClassRef' =>
         array(
-            'urn:oasis:names:tc:SAML:2.0:ac:classes:SpidL1',
+            'https://www.spid.gov.it/SpidL1',
         ),
-        
+
         'AuthnContextComparison' => 'minimum',
-        
+
         /*Per autenticazione superiori a SPID Livello 1 occorre specificare 'ForceAuthn' => true */
-        'ForceAuthn' => true,
+        'ForceAuthn' => false,
+
 	 // CHG added next 2 lines
         'NameIDPolicy' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
         'WantAssertionsSigned' => true,
-        
+
         'AttributeConsumingServiceIndex' => 0,
         'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
         'metadata.sign.enable' => true,
         'metadata.sign.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
         'metadata.supported.protocols' => array('urn:oasis:names:tc:SAML:2.0:protocol'),
-        
+
 
         'sign.authnrequest' => true,
         'sign.logout' => true,
@@ -98,13 +106,13 @@ $config = array(
             'it' => '@organizationName / @localityName (@stateOrProvinceName)',
         ),
         'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-        
+
         /* Per avere gli attributi richiesti tramite il metadata (codice fiscale, ecc) */
         'attributes' => array(
             'spidCode',
             'fiscalNumber', //codice fiscale (OBBLIGATORIO)
 #			 'ivaCode', // partita IVA
-#            'idCard', // Documento d'identità 
+#            'idCard', // Documento d'identità
 #            'expirationDate', // Data di scadenza identità
             'familyName', // cognome (OBBLIGATORIO)
             'name',  // nome (OBBLIGATORIO)
@@ -115,7 +123,7 @@ $config = array(
 #            'companyName',  // Ragione o denominazione sociale
 #            'registeredOffice', // Sede legale
 #            'address', // domicilio fisico
-#            'digitalAddress' // Indirizzo casella PEC  
+#            'digitalAddress' // Indirizzo casella PEC
             'email', // email
 #            'mobilePhone', // cellulare
         ),
@@ -123,6 +131,6 @@ $config = array(
         'acs.Bindings' => array('urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'),
         'SingleLogoutServiceBinding' => array('urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'),
     ),
-); 
- 
+);
+
 
