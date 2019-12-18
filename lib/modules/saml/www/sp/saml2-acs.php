@@ -188,7 +188,7 @@ if ($expire !== null) {
 
 if (!empty($nameId)) {
     // register this session in the logout store
-    sspmod_saml_SP_LogoutStore::addSession($sourceId, $nameId, $sessionIndex, $logoutExpire);
+    sspmod_saml_SP_LogoutStore::addSession($sourceId, array($nameId), $sessionIndex, $logoutExpire);
 
     // we need to save the NameID and SessionIndex for logout
     $logoutState = array(
