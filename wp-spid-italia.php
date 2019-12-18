@@ -125,6 +125,8 @@ add_filter( 'login_message', function( $message ) {
             $options['saml:idp'] = $_REQUEST['lepida_id'];
         } elseif ((isset($_REQUEST['intesa_id']) && $_REQUEST['intesa_id'])) {
             $options['saml:idp'] = $_REQUEST['intesa_id'];
+        } elseif ((isset($_REQUEST['test_id']) && $_REQUEST['test_id'])) {
+            $options['saml:idp'] = $_REQUEST['test_id'];
         } elseif ((isset($_REQUEST['validator_id']) && $_REQUEST['validator_id'])) {
             $options['saml:idp'] = $_REQUEST['validator_id'];
         } elseif ((isset($_REQUEST['validator2_id']) && $_REQUEST['validator2_id'])) {
