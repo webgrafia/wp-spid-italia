@@ -121,6 +121,10 @@ add_filter( 'login_message', function( $message ) {
             $options['saml:idp'] = $_REQUEST['namirial_id'];
         } elseif ((isset($_REQUEST['register_id']) && $_REQUEST['register_id'])) {
             $options['saml:idp'] = $_REQUEST['register_id'];
+        } elseif ((isset($_REQUEST['validator_id']) && $_REQUEST['validator_id'])) {
+            $options['saml:idp'] = $_REQUEST['validator_id'];
+        } elseif ((isset($_REQUEST['validator2_id']) && $_REQUEST['validator2_id'])) {
+            $options['saml:idp'] = $_REQUEST['validator2_id'];
         } else {
             echo '<b>ERRORE</b>';
         }
@@ -129,7 +133,7 @@ add_filter( 'login_message', function( $message ) {
             wp_logout();
         }
 
-        //$options['saml:AuthnContextClassRef'] = 'https://www.spid.gov.it/SpidL1';
+        $options['saml:AuthnContextClassRef'] = 'https://www.spid.gov.it/SpidL1';
         $options['samlp:RequestedAuthnContext'] = array("Comparison" => "minimum");
         $options['ErrorURL'] = wp_login_url();
         $auth->requireAuth( $options );
@@ -202,6 +206,8 @@ add_filter( 'login_message', function( $message ) {
     $aruba_id = 'https://loginspid.aruba.it';
 	$namirial_id = 'https://idp.namirialtsp.com/idp';
 	$register_id = 'https://spid.register.it';
+	    $validator_id = 'https://validator.spid.gov.it';
+	    	    $validator2_id = 'http://la-scuola.it:8080';
 
   $formaction = $auth->getLoginURL();
     ?>
@@ -234,6 +240,15 @@ add_filter( 'login_message', function( $message ) {
                     <li class="spid-idp-button-link">
                         <button class="idp-button-idp-logo" name="register_id" type="submit" value="<?php echo $register_id; ?>"><span class="spid-sr-only">SpidItalia ID</span><img class="spid-idp-button-logo" src="<?php echo $spid_idp_registerid_png; ?>" onerror="this.src='<?php echo $spid_idp_registerid_svg; ?>'; this.onerror=null;" alt="SpidItalia ID" /></button>
                     </li>
+                       <li class="spid-idp-button-link">
+                        <button class="idp-button-idp-logo" name="validator_id" type="submit" value="<?php echo $validator_id; ?>"><?php echo $validator_id; ?></button>
+                    </li>
+		                           <li class="spid-idp-button-link">
+                        <button class="idp-button-idp-logo" name="validator2_id" type="submit" value="<?php echo $validator2_id; ?>"><?php echo $validator2_id; ?></button>
+                    </li>
+
+
+
                     <li class="spid-idp-support-link">
                         <a href="http://www.spid.gov.it">Maggiori info</a>
                     </li>
